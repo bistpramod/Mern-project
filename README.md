@@ -260,7 +260,6 @@
 
   ```
 
-<<<<<<< HEAD
 ### Local State management
 ### Global State Management
   
@@ -280,8 +279,3 @@
   - Code Splitting 
 
   - AdminLayout -> Page -> AdminDashboard -> Template -> Header, sidebar, footer, KPI -> HeaderTitle => Molecule => <h1>(atom)
-=======
-
-  contexxt is not backward scompatible 
-
->>>>>>> 2b31f7d (Sync current workspace changes to bistpramod/long-term)

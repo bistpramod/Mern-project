@@ -1,10 +1,12 @@
 import { NavLink } from "react-router";
-import { H2 } from "../../../components/ui/typography/PageTitle";
+import { toast } from "sonner";
+import { useCallback, useEffect, useState } from "react";
+import Swal from "sweetalert2"
 import { LuChevronLeft, LuChevronRight, LuPlus, LuPen, LuTrash } from "react-icons/lu";
+
+import { H2 } from "../../../components/ui/typography/PageTitle";
 import ShowComponent from "../../../components/auth/AllowAccess";
 import { RowSkeleton } from "../../../components/ui/table/Skeleton";
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
 import axiosInstance from "../../../config/ApiClient";
 import { type IUserDetail } from "../../../components/auth/Auth.contract";
 import { ucFirst } from "../../../lib/utilities/helpers";
@@ -16,6 +18,8 @@ export interface IPaginationType {limit: number, skip: number, total: number, to
 
 export default function UserList() {
   // Listing manage 
+  const [keyword, setKeyword] = useState<string>();
+
   const [loading, setLoading] = useState<boolean>(true);
   const [users, setUsers] = useState<Array<IUserDetail> | null>(null);
   const [pagination, setPagintaion] = useState<IPaginationType>({
@@ -27,29 +31,64 @@ export default function UserList() {
   })
 
   // data fetch 
-  const getAllUsers = async (limit=pagination.limit, skip=pagination.skip, page=1) => {
-    try {
-      const response = await axiosInstance.get("/users",{
-        params: { limit: limit, skip: skip,
-          select: "id,firstName,lastName,email,role,gender,address,image"
-        }
-      }) as IUserListResponse
+  const getAllUsers = useCallback(
+    async (limit = pagination.limit, skip = pagination.skip, page = 1) => {
+      try {
+        const response = (await axiosInstance.get("/users", {
+          params: {
+            limit: limit,
+            skip: skip,
+            select: "id,firstName,lastName,email,role,gender,address,image",
+          },
+        })) as IUserListResponse;
 
-      setUsers(response.users)
+        setUsers(response.users);
+        setPagintaion({
+          currentPage: page,
+          limit: +response.limit,
+          skip: +response.limit,
+          total: +response.total,
+          totalNoOfPages: Math.ceil(+response.total / +response.limit),
+        });
+      } catch (exception) {
+        console.log(exception);
+        toast.error("Error fetching user list");
+      } finally {
+        setLoading(false);
+      }
+    },[]);
+
+  const searchUsers = useCallback(async (search = "") => {
+    try {
+      const response = (await axiosInstance.get("/users/search", {
+        params: { q: search },
+      })) as IUserListResponse;
+      setUsers(response.users);
       setPagintaion({
-        currentPage: page,
+        currentPage: 1,
         limit: +response.limit,
         skip: +response.limit,
         total: +response.total,
         totalNoOfPages: Math.ceil(+response.total / +response.limit),
       });
-    } catch(exception) {
-      console.log(exception)
-      toast.error("Error fetching user list")
+    } catch {
+      toast.error("Error fetching user list");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  }, []);
+
+  useEffect(() => {
+    // debounce
+    const timeout = setTimeout(() => {
+      if (keyword !== undefined) {
+        searchUsers(keyword);
+      }
+    }, 500);
+
+    return () => clearTimeout(timeout);
+  }, [keyword, searchUsers]);
+
 
   const handleNextPageChange = async(page=1) => {
     const skip  = (page-1) * (pagination.limit)
@@ -61,9 +100,42 @@ export default function UserList() {
     await getAllUsers(pagination.limit, skip, page)
   }
 
+
   useEffect(() => {
-    getAllUsers()
-  },[])
+    const handleGetAllUsers = async () =>{
+     await getAllUsers()
+    }
+    return () => {
+      handleGetAllUsers()
+    };
+  },[getAllUsers])
+
+
+  const handleDeleteConfirm = async (userId: number) => {
+    try {
+      const confirm = await Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!",
+      }) as {isConfirmed: boolean};
+      if(confirm.isConfirmed) {
+        const response = await axiosInstance.delete('/users/'+userId) as IUserDetail
+        if(response) {
+          // await getAllUsers(10, 0, 1)
+          const userFilter: Array<IUserDetail> = users?.filter((user) => user.id !== response.id) as Array<IUserDetail>
+          setUsers(userFilter)
+        }
+      }
+    } catch {
+      toast.error("Error while deleting the user.")
+    }
+  }
+
+
   return (
     <section className="bg-white w-full p-5">
       {/* Page Header */}
@@ -72,6 +144,9 @@ export default function UserList() {
         <div className="w-1/3 flex gap-3">
           <input
             type="search"
+            onChange={(e) => {
+              setKeyword(e.target.value)
+            }}
             className="w-full border border-gray-200 p-2 rounded shadow-lg bg-gray-50"
             placeholder="Enter your search keyword..."
           />
@@ -164,6 +239,10 @@ export default function UserList() {
                           className={
                             "size-10 text-white flex items-center justify-center rounded-full hover:bg-red-900 transition hover:scale-102 bg-red-800"
                           }
+                          onClick={(e) => {
+                            e.preventDefault()
+                            handleDeleteConfirm(user.id as number)
+                          }}
                           to={"/admin/user/123"}
                         >
                           <LuTrash />

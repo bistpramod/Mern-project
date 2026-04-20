@@ -1,12 +1,21 @@
-import { Suspense } from "react";
+import {  
+  // lazy, 
+  Suspense } from "react";
+
 import Loading from "../../components/ui/loading/Loading";
 import PermissionCheck from "../../config/PermissionCheck";
 import AdminLayout from "../../pages/layouts/AdminLayout";
+// const AdminLayout = lazy(() => import("../../pages/layouts/AdminLayout"));
 import AdminDashboard from "../../pages/admin/Dashboard";
 import UserList from "../../pages/admin/user/UserList";
 import UserRegister from "../../pages/admin/user/UserRegister";
 import UserDetail from "../../pages/admin/user/UserDetail";
+// const UserDetail = lazy(() => import('../../pages/admin/user/UserDetail'))
+
+
 import NotFound from "../../pages/error/NotFound";
+
+// lazy load
 
 export const AdminRouter = [
   {path: "/admin", element: (

@@ -1,5 +1,4 @@
 import z from "zod";
-import type { noUnrecognized } from "zod/v3";
 
 export interface IUsername {
   username: string;
@@ -22,7 +21,6 @@ export const LoginSchema = z.object({
 });
 
 
-<<<<<<< HEAD
 export interface IUserDetail {
   id: number | string;
   firstName: string;
@@ -48,30 +46,4 @@ export interface IUserDetail {
     country: string;
   };
   role: string;
-=======
-export interface IUserDetails {
-   id:string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    gneder: string
-    phone: string;
-    image:string;
-    address:{
-      address:string,
-      city:string,
-      state: string,
-      stateCodr:string,
-      postalCode:string,
-      coordinates:{
-        lat: number;
-        lng: number;
-
-      };
-      country:string;
-
-    };
-    role:string;
-
->>>>>>> 2b31f7d (Sync current workspace changes to bistpramod/long-term)
 }
