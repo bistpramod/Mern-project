@@ -5,13 +5,16 @@ import { UserRouter } from "../lib/router/user-router";
 import { PublicRouter } from "../lib/router/public-router";
 import ProductLayout from "../pages/layouts/ProductLayout";
 import ProductDetail from "../pages/product/ProductDetail";
-import AllProductList from "../pages/product/AllProductList";
+
 
 const routerData = createBrowserRouter([
-  {path:"/product-list", element: <ProductLayout/>, children:[
-    {index:true, element: <AllProductList/>},  // index route 
-    {index:false, path:":id", element: <ProductDetail/>}
-  ]},
+  {
+        path: "/product-list", element: <ProductLayout />, children: [
+            { index: true, element: <ProductLayout /> },
+            { path: "slug", Component: ProductDetail }
+        ],
+    },
+
   ...PublicRouter,
   ...AdminRouter,
   ...UserRouter,
