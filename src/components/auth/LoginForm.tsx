@@ -6,12 +6,13 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { NavLink, useNavigate } from "react-router";
 import { useAuth } from "../../lib/hooks/useAuth";
+import { toast } from "sonner";
 
 export default function LoginForm() {
   const router = useNavigate();
   const { login } = useAuth();
 
-  const {control, handleSubmit, formState: {errors}} = useForm<ICredentials>({
+  const {control, handleSubmit, formState: {errors, isSubmitting}} = useForm<ICredentials>({
     defaultValues: {
       username: "",
       password: "",
@@ -22,9 +23,13 @@ export default function LoginForm() {
   const loginHandle = async(credentials: ICredentials) => {
     try {
       const loggedInUser = (await login(credentials)) as IUserDetail
+      toast.success("Welcome to User panel, "+loggedInUser.firstName)
       router("/"+loggedInUser.role)
     } catch(exception) {
       console.log(exception)
+      toast.error("Error loggin in....", {
+        description: "Either your username or password is incorrect"
+      })
     }
   }
 
@@ -63,12 +68,16 @@ export default function LoginForm() {
       </div>
       <div className="flex w-full items-center gap-3">
         <button
+          disabled={isSubmitting}
           type="reset"
-          className="rounded-md cursor-pointer transition hover:scale-98 hover:bg-red-700 w-full bg-red-800 text-white flex items-center justify-center p-2"
+          className="disabled:bg-red-800/50 disabled:cursor-not-allowed rounded-md cursor-pointer transition hover:scale-98 hover:bg-red-700 w-full bg-red-800 text-white flex items-center justify-center p-2"
         >
           Reset
         </button>
-        <button className="rounded-md cursor-pointer transition hover:scale-98 hover:bg-teal-700 w-full bg-teal-800 text-white flex items-center justify-center p-2">
+        <button
+          disabled={isSubmitting}
+          className="disabled:bg-teal-800/50 disabled:cursor-not-allowed rounded-md cursor-pointer transition hover:scale-98 hover:bg-teal-700 w-full bg-teal-800 text-white flex items-center justify-center p-2"
+        >
           Submit
         </button>
       </div>

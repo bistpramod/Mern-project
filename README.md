@@ -279,3 +279,8 @@
   - Code Splitting 
 
   - AdminLayout -> Page -> AdminDashboard -> Template -> Header, sidebar, footer, KPI -> HeaderTitle => Molecule => <h1>(atom)
+
+
+# PHP - 4 `<?= ?>`
+# php - 5.2 `<?php echo ""; ?>`
+# notepad++, dreamweaver, sublime text, atom, 

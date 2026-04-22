@@ -1,15 +1,9 @@
-export default function  ProductLayout (){
+import { Outlet } from "react-router"
 
-
-
-    return (
-        <>
-       <section >
-      <div> 
-        <img src="logo.png" alt="" className="width-full py-5" />
-        <div>A product </div>
-      </div>
-       </section>
-        </>
-    )
+export const ProductLayout = () =>{
+  return (<>
+    <header></header>
+      <Outlet />
+    <footer></footer>
+  </>)
 }

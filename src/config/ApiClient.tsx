@@ -30,6 +30,8 @@ axiosInstance.interceptors.request.use((config) => {
 axiosInstance.interceptors.response.use(
   (response) =>  response.data,
   (exception) => {
+    
+    // throw exception?.response ? exception.response.data : {message: exception.mes}
     if(exception.status === 400 || exception.status === 422) {
       // validation error 
       throw exception?.response?.data
