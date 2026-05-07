@@ -3,19 +3,13 @@ import NotFound from "../pages/error/NotFound";
 import { AdminRouter } from "../lib/router/admin-router";
 import { UserRouter } from "../lib/router/user-router";
 import { PublicRouter } from "../lib/router/public-router";
-
-import AllProductList from "../pages/product/AllProductList";
-import ProductDetail from "../pages/product/ProductDetail";
-import { ProductLayout } from "../pages/layouts/ProductLayout";
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "./store";
+import { loadFromLocalStorage } from "../lib/reducers/cart-reducer";
 
 const routerData = createBrowserRouter([
   // { path: "/product-list", Component: AllProductList },
-  
-  { path: "/product-list", element: <ProductLayout />, children: [
-    { index: true, element: <AllProductList /> },     // index route
-    { path: ":slug", Component: ProductDetail },
-  ]},
-  
+
   
   ...PublicRouter,
   ...AdminRouter,
@@ -26,6 +20,9 @@ const routerData = createBrowserRouter([
 
 
 export default function RouterConfig() {
+  const dispatch = useDispatch<AppDispatch>()
+  dispatch(loadFromLocalStorage())
+
   return (
     <RouterProvider router={routerData} />
   );

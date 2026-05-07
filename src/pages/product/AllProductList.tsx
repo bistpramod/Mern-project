@@ -45,7 +45,7 @@ export default function AllProductList() {
   const [loading, setLoading] = useState<boolean>(true);
   const [allProducts, setAllProducts] = useState<Array<IProductDetail>>()
 
-  const   getAllProducts = async ({limit=40, skip=0}) => {
+  const getAllProducts = async ({limit=40, skip=0}) => {
     try {
       const response  = await axiosInstance.get('/products', {
         params: {
@@ -64,7 +64,7 @@ export default function AllProductList() {
       await getAllProducts({ limit: 40, skip: 0 });
     }
     return () => {
-      handleFunc()  
+      handleFunc()
     }
   }, [])
   return (

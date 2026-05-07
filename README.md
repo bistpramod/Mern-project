@@ -284,3 +284,15 @@
 # PHP - 4 `<?= ?>`
 # php - 5.2 `<?php echo ""; ?>`
 # notepad++, dreamweaver, sublime text, atom, 
+
+
+
+# Context 
+  - Declration (Create createContext())   
+  - Definination (Context Provider setup)
+  - Consume (Custom Hook, useContext())
+
+# Redux
+  - Declaration (Store configureStore())
+  - Provider (Global provider/ reducer)
+  - Consume/listner/state (hook)

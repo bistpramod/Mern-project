@@ -6,13 +6,18 @@ import AuthProvider from "./context/provider/AuthProvider";
 
 import { Toaster } from "sonner";
 
+import {Provider} from "react-redux"
+import store from "./config/store";
+
 
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <AuthProvider>
-      <Toaster richColors closeButton/>
-      <RouterConfig />
+      <Provider store={store}>
+        <Toaster richColors closeButton position="bottom-right" />
+        <RouterConfig />
+      </Provider>
     </AuthProvider>
   </StrictMode>,
 );
