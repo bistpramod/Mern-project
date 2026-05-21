@@ -15,6 +15,7 @@
       - Folder and File structure 
       - ```text
           /src/
+        
             assets/
               images/
               css/
